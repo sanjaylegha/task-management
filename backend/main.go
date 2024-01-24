@@ -28,7 +28,7 @@ type Task struct {
 
 // Initialize MongoDB connection
 func init() {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI("mongodb://mongo:27017")
 	client, _ = mongo.Connect(context.TODO(), clientOptions)
 }
 
@@ -48,6 +48,8 @@ func createTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	task.ID = resp.InsertedID.(primitive.ObjectID).Hex()
 
+	log.Printf("Inserted task with ID: %s\n", task.ID)
+
 	json.NewEncoder(w).Encode(task)
 }
 
@@ -66,6 +68,8 @@ func listTasksHandler(w http.ResponseWriter, r *http.Request) {
 		cursor.Decode(&task)
 		tasks = append(tasks, task)
 	}
+
+	log.Printf("Found %v tasks\n", len(tasks))
 
 	json.NewEncoder(w).Encode(tasks)
 }
