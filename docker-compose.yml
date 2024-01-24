@@ -1,0 +1,14 @@
+# docker-compose.yml (outside the backend directory)
+version: "3"
+services:
+  api:
+    build:
+      context: ./backend  # Path to the backend directory
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+  mongo:
+    image: "mongo:latest"
+    ports:
+      - "27017:27017"

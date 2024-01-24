@@ -1,0 +1,16 @@
+version: "3"
+services:
+  api:
+    build:
+      context: ./backend  # Path to the backend directory where the Dockerfile and the application code are located.
+      dockerfile: Dockerfile.dev # Name of the Dockerfile to use for building the image.
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app  # Mounts the entire backend directory into the container at /app. This allows you to make changes to your code on your host machine, and those changes will be immediately reflected in the running container without rebuilding the image.
+    depends_on:
+      - mongo
+  mongo:
+    image: "mongo:latest"
+    ports:
+      - "27017:27017"
