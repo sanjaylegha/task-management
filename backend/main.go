@@ -28,7 +28,10 @@ type Task struct {
 
 // Initialize MongoDB connection
 func init() {
-	clientOptions := options.Client().ApplyURI("mongodb://mongo:27017")
+	mongoURI := "mongodb://mongo:27017"
+	// mongoURI := "mongodb://localhost:27017"
+
+	clientOptions := options.Client().ApplyURI(mongoURI)
 	client, _ = mongo.Connect(context.TODO(), clientOptions)
 }
 
@@ -105,17 +108,15 @@ func updateTaskHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&updatedTask)
 
 	// Extract task ID from request params
-	// taskID := updatedTask.ID // r.URL.Query().Get("id")
-	taskID, err := primitive.ObjectIDFromHex(updatedTask.ID)
+	taskID := r.URL.Query().Get("id")
+	taskIDObj, err := primitive.ObjectIDFromHex(taskID)
 	if err != nil {
 		fmt.Println("primitive.ObjectIDFromHex ERROR:", err)
 	}
 
-	updatedTask.ID = ""
-
 	// Update task in MongoDB
 	collection := client.Database("taskdb").Collection("tasks")
-	filter := bson.M{"_id": taskID}
+	filter := bson.M{"_id": taskIDObj}
 	update := bson.D{{"$set", updatedTask}}
 	resp, err := collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
@@ -123,6 +124,8 @@ func updateTaskHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("Updated %v documents\n", resp.ModifiedCount)
+
+	updatedTask.ID = taskID
 
 	json.NewEncoder(w).Encode(updatedTask)
 }
