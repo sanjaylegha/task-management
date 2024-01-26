@@ -37,6 +37,7 @@ func init() {
 
 // API Handlers
 func createTaskHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	var task Task
 	json.NewDecoder(r.Body).Decode(&task)
 
@@ -57,6 +58,7 @@ func createTaskHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func listTasksHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	var tasks []Task
 
 	collection := client.Database("taskdb").Collection("tasks")
@@ -78,6 +80,7 @@ func listTasksHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteTaskHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	// Extract task ID from request params
 	taskID := r.URL.Query().Get("id")
 
@@ -104,6 +107,7 @@ func deleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateTaskHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	var updatedTask Task
 	json.NewDecoder(r.Body).Decode(&updatedTask)
 
@@ -131,6 +135,7 @@ func updateTaskHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateTaskStatusHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	// Extract task ID from request params
 	taskID := r.URL.Query().Get("id")
 
@@ -176,4 +181,10 @@ func main() {
 	}
 	log.Printf("Server is running on :%s...\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
+}
+
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	(*w).Header().Set("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept, Origin, Authorization")
 }
