@@ -1,12 +1,14 @@
 // models/task.go
 package models
 
-import "gopkg.in/mgo.v2/bson"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 // Task represents a task model
 type Task struct {
-	ID          bson.ObjectId `json:"id" bson:"_id,omitempty"`
-	TaskName    string        `json:"taskName" bson:"taskName"`
-	Description string        `json:"description" bson:"description"`
-	Status      string        `json:"status" bson:"status"`
+	ID          primitive.ObjectID `json:"id" bson:"_id"`
+	TaskName    string             `json:"taskName" bson:"taskName"`
+	Description string             `json:"description" bson:"description"`
+	Status      string             `json:"status" bson:"status"`
 }
