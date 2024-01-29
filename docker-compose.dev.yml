@@ -14,3 +14,9 @@ services:
     image: "mongo:latest"
     ports:
       - "27017:27017"
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
