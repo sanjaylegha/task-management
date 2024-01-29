@@ -17,8 +17,8 @@ import (
 
 func main() {
 	// Connecting to MongoDB
-	// mongoURI := "mongodb://mongo:27017"
-	mongoURI := "mongodb://localhost:27017"
+	mongoURI := "mongodb://mongo:27017"
+	// mongoURI := "mongodb://localhost:27017"
 
 	clientOptions := options.Client().ApplyURI(mongoURI)
 
